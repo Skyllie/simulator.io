@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCIAU - Profesjonalne Symulatory Wyścigowe</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: white;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            color: #ff4d4d;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        nav {
+            margin: 1rem 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #ff4d4d;
+        }
+
+        .hero {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background-image: url('https://www.f1authentics.com/cdn/shop/files/Red-Bull-Simulator-2022-Champions-Edition-7.jpg?v=1690448496&width=600');
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(0,0,0,0.6);
+            background-blend-mode: overlay;
+        }
+
+        .hero-content {
+            position: relative;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .map-container {
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        footer {
+            background-color: #1a1a1a;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #ff4d4d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #ff3333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            background-color: #2d2d2d;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: white;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .calendar-day {
+            background-color: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .calendar-day:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .calendar-day.booked {
+            background-color: rgba(255,0,0,0.3);
+            cursor: not-allowed;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCIAU - Profesjonalne Symulatory Wyścigowe</title>
+    <style>
+        /* Poprzednie style pozostają bez zmian */
+        
+        .logo {
+            font-size: 3.5rem;
+            color: #ff4d4d;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            display: inline-block;
+            letter-spacing: 4px;
+        }
+
+        .logo span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo span:hover {
+            transform: translateY(-5px);
+            color: #fff;
+        }
+
+        .steering-wheel {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ff4d4d;
+            border-radius: 50%;
+            position: relative;
+            transform: rotate(45deg);
+            margin: 0 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .steering-wheel::before,
+        .steering-wheel::after {
+            content: '';
+            position: absolute;
+            background-color: #ff4d4d;
+        }
+
+        .steering-wheel::before {
+            width: 4px;
+            height: 20px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .steering-wheel::after {
+            width: 20px;
+            height: 4px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .steering-wheel:hover {
+            transform: rotate(225deg);
+            border-color: #fff;
+        }
+
+        .steering-wheel:hover::before,
+        .steering-wheel:hover::after {
+            background-color: #fff;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
+            }
+            50% {
+                text-shadow: 0 0 20px #ff4d4d, 0 0 30px #ff4d4d;
+            }
+            100% {
+                text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
+            }
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo-text {
+            display: flex;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-wrapper">
+            <div class="logo">
+                <div class="logo-text">
+                    <span>K</span>
+                    <span>C</span>
+                    <span>I</span>
+                    <div class="steering-wheel"></div>
+                    <span>U</span>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <a href="#home">Strona Główna</a>
+            <a href="#about">O Nas</a>
+            <a href="#services">Usługi</a>
+            <a href="#contact">Kontakt</a>
+        </nav>
+    </header>
+
+    <!-- Reszta strony pozostaje bez zmian -->
+</body>
+
+
+
+
+</html>
+        
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>KCIAU - Profesjonalne Symulatory Wyścigowe w Rybniku</h1>
+            <p>Poczuj się jak prawdziwy kierowca wyścigowy!</p>
+            <div class="button" onclick="openReservationModal()">Zarezerwuj Sesję</div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <h2>O Nas</h2>
+        <p>KCIAU to nowoczesne centrum symulatorów wyścigowych w Rybniku. Naszym właścicielem jest Rostyslav Antipov, który od lat związany jest ze światem wyścigów i symulatorów.</p>
+        <div class="grid">
+            <div class="card">
+                <img src="https://cdn.prezentmarzen.com/img/p/9/4/6/4/1/94641.jpg" alt="Profesjonalny sprzęt wyścigowy" class="card-image">
+                <h3>Profesjonalny Sprzęt</h3>
+                <p>Korzystamy z najnowszych kierownic i pedałów Thrustmaster i Fanatec</p>
+            </div>
+            <div class="card">
+                
+                <div class="card-image" style="background-color: #444; display: flex; align-items: center; justify-content: center; color: white;">
+                <img src="https://www.f1authentics.com/cdn/shop/products/Red-Bull-Simulator-2022-Champions-Edition-4.jpg?v=1690448496&width=600" alt="Komfortowe Warunki" class="card-image"></div>
+                <h3>Komfortowe Warunki</h3>
+                <p>Klimatyzowane pomieszczenia i wygodne fotele wyścigowe</p>
+            </div>
+            <div class="card">
+                <div class="card-image" style="background-color: #444; display: flex; align-items: center; justify-content: center; color: white;">
+                    <img src="https://sim-racing.fr/wp-content/uploads/2023/06/project-cars-2-980x551.jpg" alt="Komfortowe Warunki" class="card-image"></div>
+                <h3>Bogata Biblioteka Gier</h3>
+                <p>Assetto Corsa, iRacing, F1 23 i wiele innych tytułów</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rezerwacja Modal -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeReservationModal()">&times;</span>
+            <h2>Zarezerwuj Sesję</h2>
+            <div class="calendar-header">
+                <button onclick="changeMonth(-1)">←</button>
+                <h3 id="currentMonth">Sierpień 2024</h3>
+                <button onclick="changeMonth(1)">→</button>
+            </div>
+            <div class="calendar" id="calendarDays">
+                <!-- Dni będą generowane dynamicznie przez JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <section id="contact" class="section">
+        <h2>Gdzie nas znaleźć</h2>
+        <div class="map-container">
+            <iframe 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                style="border:0" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d81688.85519547737!2d18.4965675!3d50.1021504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4711301771e56703%3A0x44510e2a7df5ff44!2sRybnik%2C+Poland!5e0!3m2!1sen!2sus!4v1565987645261!5m2!1sen!2sus" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    </section>
+
+   
+
+    <script>
+        // Obsługa modala rezerwacji
+        function openReservationModal() {
+            document.getElementById('reservationModal').style.display = 'block';
+            generateCalendar();
+        }
+
+        function closeReservationModal() {
+            document.getElementById('reservationModal').style.display = 'none';
+        }
+
+        // Zamykanie modala po kliknięciu poza nim
+        window.onclick = function(event) {
+            let modal = document.getElementById('reservationModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Zmienne do generowania kalendarza
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        function generateCalendar() {
+            const calendarDays = document.getElementById('calendarDays');
+            const monthDisplay = document.getElementById('currentMonth');
+            
+            // Czyszczenie poprzedniego kalendarza
+            calendarDays.innerHTML = '';
+
+            // Nazwy dni tygodnia
+            const daysOfWeek = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
+            daysOfWeek.forEach(day => {
+                let dayEl = document.createElement('div');
+                dayEl.textContent = day;
+                dayEl.style.fontWeight = 'bold';
+                calendarDays.appendChild(dayEl);
+            });
+
+            // Aktualizacja nazwy miesiąca
+            const months = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'];
+            monthDisplay.textContent = `${months[currentMonth]} ${currentYear}`;
+
+            let firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            firstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+            let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            for(let i = 0; i < firstDay; i++) {
+                calendarDays.appendChild(document.createElement('div'));
+            }
+
+            
+            for(let day = 1; day <= daysInMonth; day++) {
+                let dayEl = document.createElement('div');
+                dayEl.textContent = day;
+                dayEl.classList.add('calendar-day');
+
+               
+                let fullDate = new Date(currentYear, currentMonth, day);
+                if(fullDate.getDay() === 0 || fullDate.getDay() === 6) {
+                    dayEl.classList.add('booked');
+                } else {
+                    dayEl.onclick = () => selectDate(day);
+                }
+
+                calendarDays.appendChild(dayEl);
+            }
+        }
+
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if(currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            if(currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+
+        function selectDate(day) {
+            alert(`Wybrano datę: ${day}.${currentMonth + 1}.${currentYear}`);
+           
+        }
+
+       
+        generateCalendar();
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+
+    <style>
+        /* Poprzednie style pozostają bez zmian */
+        
+        /* Style dla sekcji cennika */
+        .pricing-section {
+            padding: 4rem 2rem;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .pricing-card {
+            background: linear-gradient(145deg, #2a2a2a, #383838);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .pricing-card.popular::before {
+            content: "Najpopularniejszy";
+            position: absolute;
+            top: 30px;
+            right: -35px;
+            transform: rotate(45deg);
+            background: #ff4d4d;
+            padding: 5px 40px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            color: #ff4d4d;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .duration {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .features {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .features li {
+            margin: 0.8rem 0;
+            color: #ddd;
+        }
+
+        .pricing-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #ff4d4d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .pricing-button:hover {
+            background-color: #ff3333;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <section id="pricing" class="pricing-section">
+        <h2 class="section-title">Cennik</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Start</h3>
+                <div class="price">49 zł</div>
+                <div class="duration">30 minut</div>
+                <ul class="features">
+                    <li>Wybór jednego symulatora</li>
+                    <li>Podstawowe gry wyścigowe</li>
+                    <li>Krótkie wprowadzenie</li>
+                    <li>Idealne na pierwszy raz</li>
+                </ul>
+                <div class="pricing-button" onclick="openReservationModal()">Zarezerwuj</div>
+            </div>
+
+            <div class="pricing-card popular">
+                <h3>Premium</h3>
+                <div class="price">89 zł</div>
+                <div class="duration">60 minut</div>
+                <ul class="features">
+                    <li>Dowolny symulator</li>
+                    <li>Pełna biblioteka gier</li>
+                    <li>Profesjonalne wprowadzenie</li>
+                    <li>Pomoc instruktora</li>
+                    <li>Napoje w cenie</li>
+                </ul>
+                <div class="pricing-button" onclick="openReservationModal()">Zarezerwuj</div>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Pro</h3>
+                <div class="price">249 zł</div>
+                <div class="duration">3 godziny</div>
+                <ul class="features">
+                    <li>Dostęp do wszystkich symulatorów</li>
+                    <li>Pełna biblioteka gier</li>
+                    <li>Indywidualny instruktor</li>
+                    <li>Analiza telemetrii</li>
+                    <li>Poczęstunek w cenie</li>
+                    <li>Certyfikat ukończenia</li>
+                </ul>
+                <div class="pricing-button" onclick="openReservationModal()">Zarezerwuj</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reszta strony pozostaje bez zmian -->
+</body>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCIAU - Profesjonalne Symulatory Wyścigowe</title>
+    <style>
+        /* Poprzednie style pozostają bez zmian */
+        
+        .menu-section {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 4rem 2rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-category {
+            background: linear-gradient(145deg, #2a2a2a, #383838);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            color: #ddd;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item-name {
+            text-align: left;
+        }
+
+        .menu-item-price {
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Poprzednie sekcje pozostają bez zmian -->
+
+    <!-- Sekcja menu dodana po cenniku -->
+    <section id="menu" class="menu-section">
+        <h2 class="section-title">Menu</h2>
+        <div class="menu-grid">
+            <div class="menu-category">
+                <h3>Napoje Bezalkoholowe</h3>
+                <div class="menu-item">
+                    <span class="menu-item-name">Coca-Cola</span>
+                    <span class="menu-item-price">8 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Woda mineralna</span>
+                    <span class="menu-item-price">5 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Red Bull</span>
+                    <span class="menu-item-price">12 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Sok pomarańczowy</span>
+                    <span class="menu-item-price">7 zł</span>
+                </div>
+            </div>
+            <div class="menu-category">
+                <h3>Kawy i Herbaty</h3>
+                <div class="menu-item">
+                    <span class="menu-item-name">Espresso</span>
+                    <span class="menu-item-price">6 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Cappuccino</span>
+                    <span class="menu-item-price">10 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Herbata</span>
+                    <span class="menu-item-price">5 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Latte</span>
+                    <span class="menu-item-price">12 zł</span>
+                </div>
+            </div>
+            <div class="menu-category">
+                <h3>Przekąski</h3>
+                <div class="menu-item">
+                    <span class="menu-item-name">Batonik</span>
+                    <span class="menu-item-price">5 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Chipsy</span>
+                    <span class="menu-item-price">6 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Pizza mini</span>
+                    <span class="menu-item-price">15 zł</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-item-name">Kanapka</span>
+                    <span class="menu-item-price">12 zł</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Reszta strony pozostaje bez zmian -->
+</body>
+</html>
+</html>
+<footer>
+    <p>&copy; 2025 KCIAU. Wszystkie prawa zastrzeżone.</p>
+</footer>
